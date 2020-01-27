@@ -15,6 +15,9 @@ final class Constants {
     static final String LOG_URL_ECHO_PATH = "re/";
     static final String LOG_URL_INFO_PATH = "r/";
 
+    static final int URL_SHORTEN_THRESHOLD = 3500;
+    static final int FIREBASE_URL_THRESHOLD = 7000;
+
     private static final String UTF8 = "UTF-8";
     static final Charset CHARSET_UTF8 = Charset.forName(UTF8);
 

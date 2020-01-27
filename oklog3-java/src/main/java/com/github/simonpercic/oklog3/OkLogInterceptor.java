@@ -4,11 +4,13 @@ import com.github.simonpercic.oklog.core.BaseLogDataInterceptor.RequestLogData;
 import com.github.simonpercic.oklog.core.BaseLogDataInterceptor.ResponseLogData;
 import com.github.simonpercic.oklog.core.BaseOkLogInterceptorBuilder;
 import com.github.simonpercic.oklog.core.CompressionUtil;
+import com.github.simonpercic.oklog.core.GooleAuthTokenProvider;
 import com.github.simonpercic.oklog.core.LogDataBuilder;
 import com.github.simonpercic.oklog.core.LogDataConfig;
 import com.github.simonpercic.oklog.core.LogInterceptor;
 import com.github.simonpercic.oklog.core.LogManager;
 import com.github.simonpercic.oklog.core.Logger;
+import com.github.simonpercic.oklog.core.URLShortenAPIKeyProvider;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +25,8 @@ import okhttp3.Response;
  * Interceptor for OkHttp3.
  * Call builder() to create an instance.
  *
+ * modified by kaustav modified again
+ *
  * @author Simon Percic <a href="https://github.com/simonpercic">https://github.com/simonpercic</a>
  */
 public final class OkLogInterceptor implements Interceptor {
@@ -31,9 +35,9 @@ public final class OkLogInterceptor implements Interceptor {
     private final LogDataInterceptor logDataInterceptor;
 
     private OkLogInterceptor(String logUrlBase, LogInterceptor logInterceptor, Logger logger, boolean ignoreTimber,
-            boolean withRequestBody, boolean shortenInfoUrl, @NotNull LogDataConfig logDataConfig) {
+            boolean withRequestBody, boolean shortenInfoUrl, @NotNull LogDataConfig logDataConfig,GooleAuthTokenProvider authprovider,URLShortenAPIKeyProvider apiprovider) {
         this(new LogManager(logUrlBase, logInterceptor, logger, ignoreTimber, withRequestBody, shortenInfoUrl,
-                logDataConfig, new CompressionUtil()));
+                logDataConfig, new CompressionUtil(),authprovider,apiprovider));
     }
 
     OkLogInterceptor(LogManager logManager) {
@@ -157,6 +161,16 @@ public final class OkLogInterceptor implements Interceptor {
          */
         public Builder shortenInfoUrl(boolean shortenInfoUrl) {
             baseShortenInfoUrl(shortenInfoUrl);
+            return this;
+        }
+
+        public Builder googleAuthProvider(GooleAuthTokenProvider provider) {
+            baseWithGoogleAuthProvider(provider);
+            return this;
+        }
+
+        public Builder urlShortenApiKeyProvider(URLShortenAPIKeyProvider provider) {
+            baseWithApiKeyProvider(provider);
             return this;
         }
 
@@ -352,7 +366,7 @@ public final class OkLogInterceptor implements Interceptor {
          */
         @NotNull public OkLogInterceptor build() {
             return new OkLogInterceptor(logUrlBase, logInterceptor, logger, ignoreTimber, requestBody, shortenInfoUrl,
-                    buildLogDataConfig());
+                    buildLogDataConfig(),authprovider,apiprovider);
         }
     }
 

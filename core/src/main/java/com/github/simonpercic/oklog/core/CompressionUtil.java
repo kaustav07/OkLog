@@ -1,8 +1,20 @@
 package com.github.simonpercic.oklog.core;
 
+import android.net.Uri;
+
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Random;
+import java.util.UUID;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okio.BufferedSink;
 import okio.ByteString;
 import okio.GzipSink;
@@ -64,6 +76,7 @@ public class CompressionUtil {
      * @return gzipped and Base64 encoded input string without new lines
      * @throws IOException IO Exception
      */
+
     String gzipBase64UrlSafe(String string) throws IOException {
         String result = gzipBase64(string);
 
@@ -83,6 +96,7 @@ public class CompressionUtil {
      */
     String gzipBase64UrlSafe(byte[] bytes) throws IOException {
         String result = gzipBase64(bytes);
+
 
         if (!StringUtils.isEmpty(result)) {
             result = result.replaceAll("\n", "");

@@ -26,24 +26,42 @@ public class LogManager {
     private final Logger logger;
     private final boolean withRequestBody;
     private final boolean shortenInfoUrl;
-    @NotNull private final LogDataConfig logDataConfig;
-    @NotNull private final CompressionUtil compressionUtil;
+    private GooleAuthTokenProvider authprovider = null;
+    private URLShortenAPIKeyProvider apiprovider = null;
+    @NotNull
+    private final LogDataConfig logDataConfig;
+    @NotNull
+    private final CompressionUtil compressionUtil;
 
     /**
      * Constructor.
      *
-     * @param urlBase url base to use
-     * @param logInterceptor optional log interceptor
-     * @param logger optional logger to use
-     * @param ignoreTimber true to ignore Timber for logging, even if it is present
+     * @param urlBase         url base to use
+     * @param logInterceptor  optional log interceptor
+     * @param logger          optional logger to use
+     * @param ignoreTimber    true to ignore Timber for logging, even if it is present
      * @param withRequestBody true to include request body
-     * @param shortenInfoUrl true to shorten info url on the server-side
-     * @param logDataConfig log data config
+     * @param shortenInfoUrl  true to shorten info url on the server-side
+     * @param logDataConfig   log data config
      * @param compressionUtil compression util
      */
     public LogManager(String urlBase, LogInterceptor logInterceptor, Logger logger, boolean ignoreTimber,
-            boolean withRequestBody, boolean shortenInfoUrl, @NotNull LogDataConfig logDataConfig,
-            @NotNull CompressionUtil compressionUtil) {
+                      boolean withRequestBody, boolean shortenInfoUrl, @NotNull LogDataConfig logDataConfig,
+                      @NotNull CompressionUtil compressionUtil,GooleAuthTokenProvider authprovider,URLShortenAPIKeyProvider apiprovider) {
+        this.logUrlBase = urlBase;
+        this.logInterceptor = logInterceptor;
+        this.logger = resolveLogger(logger, ignoreTimber);
+        this.withRequestBody = withRequestBody;
+        this.shortenInfoUrl = shortenInfoUrl;
+        this.logDataConfig = logDataConfig;
+        this.compressionUtil = compressionUtil;
+        this.authprovider = authprovider;
+        this.apiprovider = apiprovider;
+    }
+
+    public LogManager(String urlBase, LogInterceptor logInterceptor, Logger logger, boolean ignoreTimber,
+                      boolean withRequestBody, boolean shortenInfoUrl, @NotNull LogDataConfig logDataConfig,
+                      @NotNull CompressionUtil compressionUtil) {
         this.logUrlBase = urlBase;
         this.logInterceptor = logInterceptor;
         this.logger = resolveLogger(logger, ignoreTimber);
@@ -52,6 +70,7 @@ public class LogManager {
         this.logDataConfig = logDataConfig;
         this.compressionUtil = compressionUtil;
     }
+
 
     /**
      * Logs response data.
@@ -92,9 +111,27 @@ public class LogManager {
 
         String urlPath = infoUrl ? Constants.LOG_URL_INFO_PATH : Constants.LOG_URL_ECHO_PATH;
 
-        String url = String.format("%s%s%s%s", logUrlBase, Constants.LOG_URL_BASE_PATH, urlPath, responseBodyString);
+        String dataPartString = responseBodyString.concat(queryParams.toString());
 
-        return url.concat(queryParams.toString());
+        String url = String.format("%s%s%s%s", logUrlBase, Constants.LOG_URL_BASE_PATH, urlPath, dataPartString);
+
+        if (dataPartString.length() > Constants.URL_SHORTEN_THRESHOLD) {
+            if (dataPartString.length() > Constants.FIREBASE_URL_THRESHOLD) {
+                FirebaseUtils.INSTANCE.setTokenProvider(authprovider);
+                String uniquePostKey = FirebaseUtils.INSTANCE.postData(dataPartString);
+                if (uniquePostKey != null) {
+                    url = String.format("%s%s%s%s", logUrlBase, Constants.LOG_URL_BASE_PATH, urlPath, uniquePostKey + "?" + SharedConstants.QUERY_FIREBASE_URL + "=1");
+                }
+            } else {
+                if (shortenInfoUrl) {
+                    String shortUrl = URLShortenUtils.INSTANCE.getShortUrl(url,apiprovider);
+                    if (shortUrl != null)
+                        url = shortUrl;
+                }
+            }
+        }
+
+        return url;
     }
 
     @Nullable
@@ -140,7 +177,7 @@ public class LogManager {
 
     @NotNull
     private static StringBuilder appendQuerySymbol(@NotNull StringBuilder queryParams, String querySymbol,
-            String string) {
+                                                   String string) {
 
         if (!StringUtils.isEmpty(string)) {
             boolean first = queryParams.length() == 0;

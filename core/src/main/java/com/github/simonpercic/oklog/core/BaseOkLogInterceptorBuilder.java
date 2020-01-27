@@ -9,6 +9,8 @@ public class BaseOkLogInterceptorBuilder {
 
     protected String logUrlBase;
     protected LogInterceptor logInterceptor;
+    protected GooleAuthTokenProvider authprovider;
+    protected URLShortenAPIKeyProvider apiprovider;
     protected Logger logger;
     protected boolean ignoreTimber;
     protected boolean requestBody;
@@ -101,6 +103,14 @@ public class BaseOkLogInterceptorBuilder {
 
     protected void baseWithRequestFailedState(boolean requestFailedState) {
         this.requestFailedState = requestFailedState;
+    }
+
+    protected void baseWithGoogleAuthProvider(GooleAuthTokenProvider provider){
+        authprovider = provider;
+    }
+
+    protected void baseWithApiKeyProvider(URLShortenAPIKeyProvider provider){
+        apiprovider = provider;
     }
 
     protected void baseWithResponseCode(boolean responseCode) {

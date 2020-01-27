@@ -1,5 +1,11 @@
 package com.github.simonpercic.oklog.core;
 
+
+import java.io.IOException;
+import java.util.Random;
+
+import okhttp3.Response;
+
 /**
  * String utilities.
  *
@@ -20,4 +26,13 @@ final class StringUtils {
     static boolean isEmpty(String string) {
         return string == null || string.length() == 0;
     }
+
+    static String getResponseJSON(Response response) throws IOException,NullPointerException {
+        String json = null;
+        if(response.body() != null){
+            json = response.body().string();
+        }
+        return json;
+    }
+
 }

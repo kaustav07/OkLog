@@ -57,12 +57,12 @@ publishing {
 
 // Bintray
 bintray {
-    user = project.hasProperty('bintrayUser') ? bintrayUser : null
-    key = project.hasProperty('bintrayApiKey') ? bintrayApiKey : null
+    user = project.hasProperty('bintrayUser') ? System.getenv('bintrayUser') : null
+    key = project.hasProperty('bintrayApiKey') ? System.getenv('bintrayApiKey') : null
 
     configurations = ['archives']
     pkg {
-        repo = 'maven'
+        repo = 'com.github.kaustav07'
         name = BINTRAY_NAME
         desc = LIBRARY_DESCRIPTION
         websiteUrl = SITE_URL

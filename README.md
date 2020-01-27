@@ -2,6 +2,8 @@
 Network logging interceptor for OkHttp. 
 Logs an URL link with encoded network call data for every OkHttp call.
 
+[ ![Download](https://api.bintray.com/packages/kaustav07/com.github.kaustav07/oklog3/images/download.svg?version=2.8.1) ](https://bintray.com/kaustav07/com.github.kaustav07/oklog3/2.8.1/link)
+
 ## About the Library
 This is actually a extention library of OKLog library created by simonpercic
 
@@ -18,7 +20,59 @@ Solutions -
 - For the first problem I used firebase dynamic links to shorten it.
 - For the second problem I have used firebase realtime database to store the data and attach the unique key of the data to the url and I have also hosted the server side app myself so I fetch it there
 
-now I have did a revamped of the server side app also to make the UI better ,  I have also put a PR for the same in the original app repo , if you want to use my app you can use it like below - 
+## Usage
+
+Now I have did a revamped of the server side app also to make the UI better ,  I have also put a PR for the same in the original app repo
+
+its available in JCenter, you just have to replace the original import of the library with below -
+
+if you want to use my version of the library then  first add `maven { url  "https://dl.bintray.com/kaustav07/com.github.kaustav07"}` under `allprojects -> repositories` in your project level gradle file like below - 
+
+
+
+```groovy
+
+    allprojects {
+        repositories {
+            maven {
+                    url  "https://dl.bintray.com/kaustav07/com.github.kaustav07"
+            }
+        }
+    }
+    
+```
+
+then you just have to replace the original import of the library with below -
+
+ ```groovy
+ 
+     implementation 'com.github.kaustav07:oklog3:2.8.1'
+     
+ ```
+ 
+its also availavle in the JCenter but if you want to use it from JCenter the urls are different as there cannot be two library with same name in JCenter,
+
+your projects level gradle will be like below - 
+
+```groovy
+
+    allprojects {
+        repositories {
+            maven {
+            		url  "https://jcenter.bintray.com"
+            }
+        }
+    }
+    
+```
+
+and your app level gradle implementation will be like below - 
+
+ ```groovy
+ 
+     implementation 'com.github.kaustav07:oklog3-kaustav07:2.8.1'
+     
+ ```
 
 ```java
 //set the base url to point by url when you are setting up the interceptor

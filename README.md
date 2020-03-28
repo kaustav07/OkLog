@@ -2,7 +2,7 @@
 Network logging interceptor for OkHttp. 
 Logs an URL link with encoded network call data for every OkHttp call.
 
-[ ![Download](https://api.bintray.com/packages/kaustav07/com.github.kaustav07/oklog3/images/download.svg?version=2.8.1) ](https://bintray.com/kaustav07/com.github.kaustav07/oklog3/2.8.1/link)
+[ ![Download](https://api.bintray.com/packages/kaustav07/com.github.kaustav07/oklog3/images/download.svg?version=2.9.0) ](https://bintray.com/kaustav07/com.github.kaustav07/oklog3/2.9.0/link)
 
 ## About the Library
 This is actually a extention library of OKLog library created by simonpercic
@@ -36,6 +36,7 @@ if you want to use my version of the library then  first add `maven { url  "http
         repositories {
             maven {
                     url  "https://dl.bintray.com/kaustav07/com.github.kaustav07"
+
             }
         }
     }
@@ -46,7 +47,7 @@ then you just have to replace the original import of the library with below -
 
  ```groovy
  
-     implementation 'com.github.kaustav07:oklog3:2.8.1'
+     implementation 'com.github.kaustav07:oklog3:$latest_version'
      
  ```
  
@@ -70,7 +71,7 @@ and your app level gradle implementation will be like below -
 
  ```groovy
  
-     implementation 'com.github.kaustav07:oklog3-kaustav07:2.8.1'
+     implementation 'com.github.kaustav07:oklog3-kaustav07:$latest_version'
      
  ```
 

@@ -1,10 +1,10 @@
 package com.github.simonpercic.oklog.core
 
 import android.net.Uri
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import org.json.JSONObject
 import java.lang.Exception
 import java.net.URLDecoder
@@ -17,7 +17,7 @@ const val LOG_TIMESTAMP_KEY = "RESPONSE_LOG_TIME"
 
 object FirebaseUtils {
 
-    val MEDIA_TYPE by lazy { "application/json; charset=utf-8".toMediaType() }
+    val MEDIA_TYPE by lazy { MediaType.get("application/json; charset=utf-8")}
 
     var token: String? = null
     var authTokenProvider : GooleAuthTokenProvider? = null
@@ -51,7 +51,7 @@ object FirebaseUtils {
                     appendQueryParameter("access_token",token)
                 }.build()
 
-                val requestBody = jsonObject.toString().toRequestBody(MEDIA_TYPE)
+                val requestBody = RequestBody.create(MEDIA_TYPE,jsonObject.toString())
 
                 val request = Request.Builder().apply {
                     url(URLDecoder.decode(uri.toString(),"UTF-8"))

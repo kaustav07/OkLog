@@ -1,8 +1,9 @@
 package com.github.simonpercic.oklog.core
 
+import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.RequestBody
 import org.json.JSONObject
 
 const val URL_SHORTNER_URL = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key="
@@ -23,7 +24,9 @@ object URLShortenUtils {
                     })
                     //put("longDynamicLink","https://nearbuy.page.link/?link=$it")
                 }
-                val requestBody = requestJSON.toString().toRequestBody()
+                // requestJSON.toString()
+                val mediaType = MediaType.get("application/json; charset=utf-8")
+                val requestBody = RequestBody.create(mediaType,requestJSON.toString())
                 val postRequest = Request.Builder().apply {
                     url("$URL_SHORTNER_URL$api")
                     post(requestBody)
